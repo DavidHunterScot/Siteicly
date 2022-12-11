@@ -82,7 +82,7 @@ class Siteicly
     private function emptyDir( String $dirPath )
     {
         if( ! is_dir( $dirPath ) )
-            die( "Cannot empty non-existant directory: " . $dirPath . "\n" );
+            return;
         
         $dirItems = scandir( $dirPath );
 
