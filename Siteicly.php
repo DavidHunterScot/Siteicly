@@ -2,16 +2,16 @@
 
 class Siteicly
 {
-    public function __construct( String $inputPath, String $outputPath )
+    public function __construct( String $inputPath, String $outputPath, bool $prettyURLs = true )
     {
         if( ! is_dir( $inputPath ) )
             die( "Input Path does not exist or is not a directory!\n" );
         
         $this->emptyDir( $outputPath );
-        $this->staticify( $inputPath, $outputPath );
+        $this->staticify( $inputPath, $outputPath, $prettyURLs );
     }
 
-    private function staticify( String $inputPath, String $outputPath ): void
+    private function staticify( String $inputPath, String $outputPath, bool $prettyURLs ): void
     {
         if( ! is_dir( $inputPath ) )
             die( "Staticify Input Path does not exist or is not a directory!\n" );
@@ -37,7 +37,7 @@ class Siteicly
             
             if( is_dir( $inputFilePath ) )
             {
-                $this->staticify( $inputFilePath, $outputFilePath );
+                $this->staticify( $inputFilePath, $outputFilePath, $prettyURLs );
                 continue;
             }
 
@@ -49,6 +49,14 @@ class Siteicly
                 if( substr( $inputFilePath, -4 ) == ".php" )
                 {
                     $outputFilePath = str_replace( ".php", ".html", $outputFilePath );
+
+                    if( $prettyURLs && $inputItem != "index.php" )
+                    {
+                        $outputFilePath = str_replace( ".html", "", $outputFilePath );
+                        if( ! is_dir( $outputFilePath ) )
+                            mkdir( $outputFilePath );
+                        $outputFilePath .= DIRECTORY_SEPARATOR . "index.html";
+                    }
 
                     $this->staticifyPHP( $inputFilePath, $outputFilePath );
                     echo "Staticified PHP File: " . $inputFilePath . " to " . $outputFilePath . "!\n";
