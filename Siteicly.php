@@ -2,16 +2,16 @@
 
 class Siteicly
 {
-    public function __construct( String $inputPath, String $outputPath, bool $prettyURLs = true )
+    public function __construct( String $inputPath, String $outputPath, bool $prettyURLs = true, array $pathPrefixesToIgnore = [] )
     {
         if( ! is_dir( $inputPath ) )
             die( "Input Path does not exist or is not a directory!\n" );
         
         $this->emptyDir( $outputPath );
-        $this->staticify( $inputPath, $outputPath, $prettyURLs );
+        $this->staticify( $inputPath, $outputPath, $prettyURLs, $pathPrefixesToIgnore );
     }
 
-    private function staticify( String $inputPath, String $outputPath, bool $prettyURLs ): void
+    private function staticify( String $inputPath, String $outputPath, bool $prettyURLs, array $pathPrefixesToIgnore ): void
     {
         if( ! is_dir( $inputPath ) )
             die( "Staticify Input Path does not exist or is not a directory!\n" );
@@ -35,9 +35,14 @@ class Siteicly
             $inputFilePath = $inputPath . DIRECTORY_SEPARATOR . $inputItem;
             $outputFilePath = $outputPath . DIRECTORY_SEPARATOR . $inputItem;
             
+            foreach( $pathPrefixesToIgnore as $pathPrefixToIgnore )
+                if( str_contains( $inputFilePath, $pathPrefixToIgnore ) )
+                    continue(2);
+
+            
             if( is_dir( $inputFilePath ) )
             {
-                $this->staticify( $inputFilePath, $outputFilePath, $prettyURLs );
+                $this->staticify( $inputFilePath, $outputFilePath, $prettyURLs, $pathPrefixesToIgnore );
                 continue;
             }
 
