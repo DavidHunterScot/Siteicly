@@ -98,9 +98,6 @@ class Siteicly
             return;
         
         $dirItems = scandir( $dirPath );
-
-        if( count( $dirItems ) <= 2 )
-            echo "Ignoring already empty directory: " . $dirPath;
         
         foreach( $dirItems as $dirItem )
         {
